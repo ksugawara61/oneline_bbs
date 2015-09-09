@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // 保存する
     mysql_query($sql, $link);
+
+    /* mysql_close($link); */
+    /* header('Location: http://' .$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); */
   }
 }
 
@@ -72,6 +75,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   <?php
   // 投稿された内容を取得するSQLを作成して結果を取得
+  $sql = "select * from `post` order by `create_at` desc";
+  $result = mysql_query($sql, $link);
   ?>
+  <?php if ($result !== false && mysql_num_rows($result)): ?>
+  <ul>
+    <?php while ($post = mysql_fetch_assoc($result)): ?>
+    <li>
+      <?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>
+      <?php echo htmlspecialchars($post['comment'], ENT_QUOTES, 'UTF-8'); ?>
+      - <?php echo htmlspecialchars($post['create_at'], ENT_QUOTES, 'UTF-8'); ?>
+    </li>
+    <?php endwhile; ?>
+  </ul>
+  <?php endif; ?>
+
+  <?php
+  // 取得結果を開放して接続を閉じる
+  mysql_free_result($result);
+  mysql_close($link);
+  ?>
+
 </body>
 </html>
+
