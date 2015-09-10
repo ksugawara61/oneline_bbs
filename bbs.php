@@ -48,6 +48,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
+// 投稿された内容を取得するSQLを作成して結果を取得
+$sql = "select * from `post` order by `create_at` desc";
+$result = mysql_query($sql, $link);
+
+// 取得した結果を$postsに格納
+$posts = array();
+if ($result !== false && mysql_fetch_assoc($result)) {
+  while ($post = mysql_fetch_assoc($result)) {
+    $posts[] = $post;
+  }
+}
+
+// 取得結果を開放して接続を閉じる
+mysql_free_result($result);
+mysql_close($link);
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "html://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -74,29 +90,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <input type="submit" name="submit" value="送信" />
   </form>
 
-  <?php
-  // 投稿された内容を取得するSQLを作成して結果を取得
-  $sql = "select * from `post` order by `create_at` desc";
-  $result = mysql_query($sql, $link);
-  ?>
-
-  <?php if ($result !== false && mysql_num_rows($result)): ?>
+  <?php if (count($posts) > 0): ?>
   <ul>
-    <?php while ($post = mysql_fetch_assoc($result)): ?>
+    <?php foreach ($posts as $post): ?>
     <li>
       <?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>
       <?php echo htmlspecialchars($post['comment'], ENT_QUOTES, 'UTF-8'); ?>
       - <?php echo htmlspecialchars($post['create_at'], ENT_QUOTES, 'UTF-8'); ?>
     </li>
-    <?php endwhile; ?>
+    <?php endforeach; ?>
   </ul>
   <?php endif; ?>
-
-  <?php
-  // 取得結果を開放して接続を閉じる
-  mysql_free_result($result);
-  mysql_close($link);
-  ?>
 
 </body>
 </html>
