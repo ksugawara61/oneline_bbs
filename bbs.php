@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // 保存する
     mysql_query($sql, $link);
 
-    /* mysql_close($link); */
-    /* header('Location: http://' .$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); */
+    mysql_close($link);
+    header('Location: http://' .$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
   }
 }
 
@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <?php endforeach ?>
     </ul>
     <?php endif; ?>
+
     名前: <input type="text" name="name" /><br />
     ひとこと: <input type="text" name="comment" size="60" /><br />
     <input type="submit" name="submit" value="送信" />
@@ -78,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $sql = "select * from `post` order by `create_at` desc";
   $result = mysql_query($sql, $link);
   ?>
+
   <?php if ($result !== false && mysql_num_rows($result)): ?>
   <ul>
     <?php while ($post = mysql_fetch_assoc($result)): ?>
